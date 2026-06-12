@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/NandiniDhanrale/user-age-api/config"
-	"github.com/NandiniDhanrale/user-age-api/internal/app"
+	"github.com/NandiniDhanrale/user-age-api/app"
 	"github.com/NandiniDhanrale/user-age-api/internal/logger"
 	"go.uber.org/zap"
 )

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/NandiniDhanrale/user-age-api/internal/app"
+	"github.com/NandiniDhanrale/user-age-api/app"
 	"github.com/gofiber/adaptor/v2"
 )
 
