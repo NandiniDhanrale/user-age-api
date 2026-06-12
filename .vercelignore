@@ -5,4 +5,4 @@ README.md
 sqlc.yaml
 db/
 internal/
-*.md
+cmd/
