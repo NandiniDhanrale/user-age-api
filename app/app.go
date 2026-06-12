@@ -61,6 +61,15 @@ func New() *App {
 		WriteTimeout: cfg.WriteTimeout,
 	})
 
+	fb.Get("/", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{
+			"service": "user-age-api",
+			"version": "1.0.0",
+			"health":  "/api/health",
+			"docs":    "https://github.com/NandiniDhanrale/user-age-api",
+		})
+	})
+
 	fb.Get("/api/health", func(c *fiber.Ctx) error {
 		code := fiber.StatusOK
 		status := "ok"
