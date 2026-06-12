@@ -11,8 +11,9 @@ import (
 )
 
 var (
-	ErrUserNotFound = errors.New("user not found")
-	ErrInvalidDOB   = errors.New("invalid date of birth format, expected YYYY-MM-DD")
+	ErrUserNotFound      = errors.New("user not found")
+	ErrInvalidDOB        = errors.New("invalid date of birth format, expected YYYY-MM-DD")
+	ErrServiceUnavailable = errors.New("database is unavailable")
 )
 
 type UserService interface {
@@ -31,7 +32,18 @@ func NewUserService(repo repository.UserRepository) UserService {
 	return &userService{repo: repo}
 }
 
+func (s *userService) checkDB() error {
+	if s.repo == nil {
+		return ErrServiceUnavailable
+	}
+	return nil
+}
+
 func (s *userService) Create(ctx context.Context, req models.CreateUserRequest) (models.UserResponse, error) {
+	if err := s.checkDB(); err != nil {
+		return models.UserResponse{}, err
+	}
+
 	dob, err := parseDOB(req.DOB)
 	if err != nil {
 		return models.UserResponse{}, ErrInvalidDOB
@@ -46,6 +58,10 @@ func (s *userService) Create(ctx context.Context, req models.CreateUserRequest) 
 }
 
 func (s *userService) GetByID(ctx context.Context, id int32) (models.UserResponse, error) {
+	if err := s.checkDB(); err != nil {
+		return models.UserResponse{}, err
+	}
+
 	user, err := s.repo.GetByID(ctx, id)
 	if err != nil {
 		if err.Error() == "no rows in result set" {
@@ -57,6 +73,10 @@ func (s *userService) GetByID(ctx context.Context, id int32) (models.UserRespons
 }
 
 func (s *userService) List(ctx context.Context) ([]models.UserResponse, error) {
+	if err := s.checkDB(); err != nil {
+		return nil, err
+	}
+
 	users, err := s.repo.List(ctx)
 	if err != nil {
 		return nil, err
@@ -70,6 +90,10 @@ func (s *userService) List(ctx context.Context) ([]models.UserResponse, error) {
 }
 
 func (s *userService) Update(ctx context.Context, id int32, req models.UpdateUserRequest) (models.UserResponse, error) {
+	if err := s.checkDB(); err != nil {
+		return models.UserResponse{}, err
+	}
+
 	dob, err := parseDOB(req.DOB)
 	if err != nil {
 		return models.UserResponse{}, ErrInvalidDOB
@@ -86,6 +110,10 @@ func (s *userService) Update(ctx context.Context, id int32, req models.UpdateUse
 }
 
 func (s *userService) Delete(ctx context.Context, id int32) error {
+	if err := s.checkDB(); err != nil {
+		return err
+	}
+
 	err := s.repo.Delete(ctx, id)
 	if err != nil {
 		if err.Error() == "no rows in result set" {

@@ -15,9 +15,13 @@ type Config struct {
 }
 
 func Load() *Config {
+	port := getEnvInt("PORT", 0)
+	if port == 0 {
+		port = getEnvInt("SERVER_PORT", 8080)
+	}
 	return &Config{
-		ServerPort:   getEnvInt("SERVER_PORT", 8080),
-		DatabaseURL:  getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/userage?sslmode=disable"),
+		ServerPort:   port,
+		DatabaseURL:  getEnv("DATABASE_URL", ""),
 		ReadTimeout:  time.Duration(getEnvInt("READ_TIMEOUT", 10)) * time.Second,
 		WriteTimeout: time.Duration(getEnvInt("WRITE_TIMEOUT", 10)) * time.Second,
 		RequestIDKey: "X-Request-ID",

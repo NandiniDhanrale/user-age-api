@@ -19,6 +19,7 @@ handler → service → repository → SQLC → PostgreSQL
 
 | Method | Path          | Description     |
 |--------|---------------|-----------------|
+| GET    | /api/health   | Health check    |
 | POST   | /api/users    | Create a user   |
 | GET    | /api/users    | List all users  |
 | GET    | /api/users/:id| Get user by ID  |
@@ -79,12 +80,28 @@ go run ./cmd/server
 
 ### Environment variables
 
-| Variable      | Default                                                         |
-|---------------|-----------------------------------------------------------------|
-| SERVER_PORT   | 8080                                                            |
-| DATABASE_URL  | postgres://postgres:postgres@localhost:5432/userage?sslmode=disable |
-| READ_TIMEOUT  | 10                                                              |
-| WRITE_TIMEOUT | 10                                                              |
+| Variable      | Default | Description                       |
+|---------------|---------|-----------------------------------|
+| PORT          | 8080    | Vercel-assigned port (takes priority) |
+| SERVER_PORT   | 8080    | Fallback port                     |
+| DATABASE_URL  | -       | PostgreSQL connection string      |
+| READ_TIMEOUT  | 10      | Server read timeout (seconds)     |
+| WRITE_TIMEOUT | 10      | Server write timeout (seconds)    |
+
+## Deploy to Vercel
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Set database URL in Vercel dashboard or via CLI:
+vercel env add DATABASE_URL
+```
+
+The server runs in degraded mode if `DATABASE_URL` is not set — health check returns `503` and user endpoints return `503 Service Unavailable`.
 
 ## Project Structure
 

@@ -43,6 +43,13 @@ func GlobalErrorHandler(log *zap.Logger) fiber.Handler {
 			})
 		}
 
+		if errors.Is(err, service.ErrServiceUnavailable) {
+			return c.Status(fiber.StatusServiceUnavailable).JSON(ErrorResponse{
+				Error:   "service_unavailable",
+				Message: err.Error(),
+			})
+		}
+
 		var fiberErr *fiber.Error
 		if errors.As(err, &fiberErr) {
 			return c.Status(fiberErr.Code).JSON(ErrorResponse{
