@@ -4,6 +4,7 @@ go 1.26.2
 
 require (
 	github.com/go-playground/validator/v10 v10.30.3
+	github.com/gofiber/adaptor/v2 v2.2.1
 	github.com/gofiber/fiber/v2 v2.52.13
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.10.0
